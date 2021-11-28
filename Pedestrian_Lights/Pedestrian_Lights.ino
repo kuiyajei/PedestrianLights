@@ -36,11 +36,11 @@ void loop() {
   unsigned currentTime = millis();
   
 
-  if(currentTime - startTime_display >= 1000){ // change digit if 1000 millis has passed
+  if(currentTime - startTime_display >= 1000){ // execute when a second has passed
     startTime_display = currentTime; // we do this because we can't reset currentTime
     for(int section = 13; section >= 7; section--) digitalWrite(section, digits[digit_row][13-section]); // for loop so we skip 1-by-1 light setting
 
-    // signal display here
+    // signal display
     if(light_state == 0 && digit_row >= -1) { // make if() condition when row is >= -1 && cycle is stop THEN *stop
       digitalWrite(yellow_light, LOW);
       digitalWrite(red_light, HIGH);
@@ -56,7 +56,7 @@ void loop() {
     digit_row--;
   }
 
-  // caution blink logic -- placed here since the code above only executes when a second passes
+  // caution blink logic -- partly placed here since the code above only executes when a second passes, which is a problem for the blinking mechanic
   if(light_state == 1 && digit_row < 4){
     if(currentTime - startTime_caution >= 1000) startTime_caution = currentTime; // new cycle if 1000 millis
     if(currentTime - startTime_caution <= 500) digitalWrite(yellow_light, HIGH); // within the 500 millis in the caution cycle, turn it on
@@ -74,9 +74,15 @@ void loop() {
   }
 
   // make if() condition when button is pushed in stop state
-  
+  if(digitalRead(6) == LOW && digit_row > 4 && light_state == 0){
+    tone(5, 1046, 100);
+    digit_row = 4;
+    startTime_display = currentTime;
+    startTime_caution = currentTime;
+  }
 }
 
+/*
 void segment_display(int currentTime) {
   
-}
+}*/
