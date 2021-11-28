@@ -14,7 +14,7 @@ int digits[10][7] = {{1,1,1,1,1,1,0},//0
 int digit_row = 9;
 int light_state = 0; // 0 - stop; 1 - go
 
-unsigned int startTime_display = 0; // for changing digits in 7-segment
+unsigned int startTime_display = 1000; // for changing digits in 7-segment
 unsigned int startTime_caution = 0; // for caution light blinking
 
 int red_light = 3;
@@ -36,22 +36,17 @@ void loop() {
   unsigned currentTime = millis();
   Serial.println(digit_row);
 
-  segment_display(currentTime);
-  
-  if(light_state == 0 && digit_row >= 0) { // make if() condition when row is >= 0 && cycle is stop then *stop
+  segment_display(currentTime); // display timer
+
+  // Start of loop
+  if(light_state == 0 && digit_row >= -1) { // make if() condition when row is >= 0 && cycle is stop THEN *stop
     digitalWrite(red_light, HIGH);
-    
   }
-  else {
-    light_state = 1;
-    digit_row = 9;
-  }
-  
-  if(light_state == 1 && digit_row >= 6){ // make if() condition when row is >= 6 && cycle is go THEN *go
+  else if(light_state == 1 && digit_row >= 5){ // make if() condition when row is >= 6 && cycle is go THEN *go
     digitalWrite(red_light, LOW);
     digitalWrite(green_light, HIGH);    
   }
-  else if(light_state == 1 && digit_row <= 5){ // make if() condition when row is <= 5 && cycle is go THEN *caution
+  else if(light_state == 1 && digit_row <= 4){ // make if() condition when row is <= 5 && cycle is go THEN *caution
     digitalWrite(green_light, LOW);
     // caution blink logic
     if(currentTime - startTime_caution >= 1000) startTime_caution = currentTime; // new cycle if 1000 millis
@@ -72,5 +67,13 @@ void segment_display(int currentTime) {
     startTime_display = currentTime; // we do this because we can't reset currentTime
     for(int section = 13; section >= 7; section--) digitalWrite(section, digits[digit_row][13-section]); // for loop so we skip 1-by-1 light setting
     digit_row--;
+  }
+  if(digit_row == -1){ // circumvent segment_display hitting -2 to avoid error
+    digit_row = 9; 
+    // switch light state when hitting -1
+    if(light_state == 0)
+      light_state = 1;
+    else
+      light_state = 0;
   }
 }
