@@ -1,13 +1,9 @@
 # (Nov. 28)
-Signal cycle is now functional but is not complete.
+This version covers what's intended BUT it'll need some testing.
 
-Minor issue(s):
-- Caution does not blink at "0"
-- Caution blinking is functional but the code may be inefficient. Maybe.
+###Issues:
+- Green LED is on no matter what. I think it's just a circuit connection error on my end but please try it out yourself. And -- if you can -- fix the code if it's not a connection error.
 
-Major issue(s):
-- Green LED is still on no matter what. I'm not sure if this is a hardware problem for me.
-
-Still needs to be added:
--  Button to reduce timer.
-- Buzzer noise when button is pressed.
+###Nice to add:
+- Simple tune when the switch is pushed. Maybe add a second beep? Make sure to make use of multitasking (millis) for this to function properly. Using delay will screw up the system.
+- Refactor code to make it look more organized.
