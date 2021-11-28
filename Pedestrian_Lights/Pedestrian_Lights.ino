@@ -34,41 +34,37 @@ void setup() {
 void loop() {
   // multitask to push button at any time within time frame
   unsigned currentTime = millis();
-  Serial.println(digit_row);
-
-  segment_display(currentTime); // display timer
-
-  // Start of loop
-  if(light_state == 0 && digit_row >= -1) { // make if() condition when row is >= 0 && cycle is stop THEN *stop
-    digitalWrite(red_light, HIGH);
-  }
-  else if(light_state == 1 && digit_row >= 5){ // make if() condition when row is >= 6 && cycle is go THEN *go
-    digitalWrite(red_light, LOW);
-    digitalWrite(green_light, HIGH);    
-  }
-  else if(light_state == 1 && digit_row <= 4){ // make if() condition when row is <= 5 && cycle is go THEN *caution
-    digitalWrite(green_light, LOW);
-    // caution blink logic
-    if(currentTime - startTime_caution >= 1000) startTime_caution = currentTime; // new cycle if 1000 millis
-    if(digit_row < 9 && currentTime - startTime_caution <= 500) digitalWrite(yellow_light, HIGH); // within the 500 millis in the caution cycle, turn it on
-    else digitalWrite(yellow_light, LOW);
-  }
-  else {
-    light_state == 0;
-  }
-    
-
-  // make if() condition when button is pushed in stop state
   
-}
 
-void segment_display(int currentTime) {
   if(currentTime - startTime_display >= 1000){ // change digit if 1000 millis has passed
     startTime_display = currentTime; // we do this because we can't reset currentTime
     for(int section = 13; section >= 7; section--) digitalWrite(section, digits[digit_row][13-section]); // for loop so we skip 1-by-1 light setting
+
+    // signal display here
+    if(light_state == 0 && digit_row >= -1) { // make if() condition when row is >= -1 && cycle is stop THEN *stop
+      digitalWrite(yellow_light, LOW);
+      digitalWrite(red_light, HIGH);
+    }
+    else if(light_state == 1 && digit_row >= 5){ // make if() condition when row is >= 5 && cycle is go THEN *go
+      digitalWrite(red_light, LOW);
+      digitalWrite(green_light, HIGH);    
+    }
+    else if(light_state == 1 && digit_row <= 4){ // make if() condition when row is <= 4 && cycle is go THEN *caution
+      digitalWrite(green_light, LOW);
+    }
+    
     digit_row--;
   }
-  if(digit_row == -1){ // circumvent segment_display hitting -2 to avoid error
+
+  // caution blink logic -- placed here since the code above only executes when a second passes
+  if(light_state == 1 && digit_row < 4){
+    if(currentTime - startTime_caution >= 1000) startTime_caution = currentTime; // new cycle if 1000 millis
+    if(currentTime - startTime_caution <= 500) digitalWrite(yellow_light, HIGH); // within the 500 millis in the caution cycle, turn it on
+    else digitalWrite(yellow_light, LOW);
+  }
+
+  // logic for resetting cycle and switching light state
+  if(digit_row == -1){ // circumvent segment_display going to -2 to avoid error
     digit_row = 9; 
     // switch light state when hitting -1
     if(light_state == 0)
@@ -76,4 +72,11 @@ void segment_display(int currentTime) {
     else
       light_state = 0;
   }
+
+  // make if() condition when button is pushed in stop state
+  
+}
+
+void segment_display(int currentTime) {
+  
 }
