@@ -1,7 +1,4 @@
-# (Nov. 25)
+# (Nov. 28)
 Current issues:
 - Green light needs fixing. Turns on unintentionally.
-- Red light and timer needs to be in sync
-
-To be done:
-Other cycles not finished
+- Red light doesn't turn on when it displays "0"
