@@ -35,7 +35,6 @@ void loop() {
   // multitask to push button at any time within time frame
   unsigned currentTime = millis();
   
-
   if(currentTime - startTime_display >= 1000){ // execute when a second has passed
     startTime_display = currentTime; // we do this because we can't reset currentTime
     for(int section = 13; section >= 7; section--) digitalWrite(section, digits[digit_row][13-section]); // for loop so we skip 1-by-1 light setting
@@ -73,8 +72,8 @@ void loop() {
       light_state = 0;
   }
 
-  // make if() condition when button is pushed in stop state
-  if(digitalRead(6) == LOW && digit_row > 4 && light_state == 0){
+  // condition when button is pushed in stop state
+  if(digitalRead(6) == LOW && digit_row > 4 && digit_row < 9 && light_state == 0){
     tone(5, 1046, 100);
     digit_row = 4;
     startTime_display = currentTime;
